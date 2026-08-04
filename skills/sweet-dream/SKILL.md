@@ -1,6 +1,6 @@
 ---
 name: sweet-dream
-description: "Memory consolidation with a Zep knowledge graph backend. Scans recent session transcripts for corrections, preferences, decisions, and recurring patterns, dedupes them against the sweet_dreams graph, stores them as ontology-typed episodes, and rebuilds the local MEMORY.md index from graph facts. Auto-triggers every 24h via a Stop hook. Run when the user says /sweet-dream, or when ~/.claude/.sweet-dream-pending exists at session start."
+description: "Memory consolidation with a Zep knowledge graph backend. Scans recent session transcripts for corrections, preferences, decisions, and recurring patterns, dedupes them against the sweet_dreams graph, stores them as ontology-typed episodes, and rebuilds the local MEMORY.md index from graph facts. Auto-triggers every 24h via a Stop hook, or sooner when a session auto-compacts (PreCompact hook). Run when the user says /sweet-dream, or when ~/.claude/.sweet-dream-pending exists at session start."
 ---
 
 # sweet-dream — Zep-backed memory consolidation
@@ -266,10 +266,19 @@ Session ends
   --> Stop hook runs should-dream.sh (~10ms)
   --> 24h passed AND 3+ new sessions?  no --> exit silently
   --> yes --> touch ~/.claude/.sweet-dream-pending
+Context fills up mid-session
+  --> PreCompact hook (auto compactions only) runs should-dream.sh
+      with MIN_SESSIONS=1 — the compaction itself is the activity proof
+  --> 24h passed?  no --> exit silently
+  --> yes --> touch the same flag
 Next session starts
   --> this skill's description tells Claude to check the flag
   --> flag exists --> run the four phases --> write .sweet-dream-last, rm flag
 ```
+
+The two triggers complement each other: Stop is time-driven, PreCompact is
+activity-driven (a heavy day dreams sooner). The hook never runs the dream
+itself — it only sets the flag, so compaction is never blocked.
 
 ## Safety
 

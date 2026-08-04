@@ -47,6 +47,10 @@ Session ends
   └─ Stop hook: should-dream.sh (~10ms)
        24h elapsed AND 3+ new sessions? ──no──> exit silently
        └─yes─> touch ~/.claude/.sweet-dream-pending
+Context fills up mid-session
+  └─ PreCompact hook (auto): should-dream.sh with MIN_SESSIONS=1
+       24h elapsed? ──no──> exit silently
+       └─yes─> touch the same flag
 Next session
   └─ skill sees the flag ─> 4-phase dream
        ORIENT       graph + local memory state (per-project + global)

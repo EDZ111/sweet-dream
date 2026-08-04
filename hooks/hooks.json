@@ -10,6 +10,18 @@
           }
         ]
       }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "SWEET_DREAM_MIN_SESSIONS=1 bash \"${CLAUDE_PLUGIN_ROOT}/scripts/sweet-dream-hook.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   }
 }

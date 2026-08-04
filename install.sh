@@ -25,32 +25,43 @@ import json, os, sys
 
 mode = sys.argv[1]
 path = os.path.expanduser("~/.claude/settings.json")
-hook_cmd = "bash $HOME/.claude/skills/sweet-dream/sweet-dream-hook.sh"
+stop_cmd = "bash $HOME/.claude/skills/sweet-dream/sweet-dream-hook.sh"
+compact_cmd = "SWEET_DREAM_MIN_SESSIONS=1 " + stop_cmd
 
 settings = {}
 if os.path.exists(path):
     with open(path, encoding="utf-8") as f:
         settings = json.load(f)
 
-stop = settings.setdefault("hooks", {}).setdefault("Stop", [])
+hooks_cfg = settings.setdefault("hooks", {})
 
 def has_hook(entry):
     return any("sweet-dream-hook.sh" in h.get("command", "")
                for h in entry.get("hooks", []))
 
 if mode == "add":
+    stop = hooks_cfg.setdefault("Stop", [])
     if not any(has_hook(e) for e in stop):
-        stop.append({"hooks": [{"type": "command", "command": hook_cmd, "timeout": 10}]})
+        stop.append({"hooks": [{"type": "command", "command": stop_cmd, "timeout": 10}]})
         print("Stop hook registered")
     else:
         print("Stop hook already present")
+    pre = hooks_cfg.setdefault("PreCompact", [])
+    if not any(has_hook(e) for e in pre):
+        pre.append({"matcher": "auto",
+                    "hooks": [{"type": "command", "command": compact_cmd, "timeout": 10}]})
+        print("PreCompact hook registered")
+    else:
+        print("PreCompact hook already present")
 else:
-    settings["hooks"]["Stop"] = [e for e in stop if not has_hook(e)]
-    if not settings["hooks"]["Stop"]:
-        del settings["hooks"]["Stop"]
-    if not settings["hooks"]:
+    for key in ("Stop", "PreCompact"):
+        if key in hooks_cfg:
+            hooks_cfg[key] = [e for e in hooks_cfg[key] if not has_hook(e)]
+            if not hooks_cfg[key]:
+                del hooks_cfg[key]
+    if not hooks_cfg:
         del settings["hooks"]
-    print("Stop hook removed")
+    print("hooks removed")
 
 with open(path, "w", encoding="utf-8") as f:
     json.dump(settings, f, indent=2)
