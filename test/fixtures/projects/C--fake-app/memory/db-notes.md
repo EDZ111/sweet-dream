@@ -1,0 +1,1 @@
+- staging DB is PostgreSQL 15 (checked recently)

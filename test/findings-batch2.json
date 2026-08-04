@@ -1,0 +1,8 @@
+{
+  "fact": "Decided to use Memcached for caching, replacing Redis which was too expensive",
+  "kind": "decision",
+  "source_date": "2026-08-04",
+  "source_session": "session-ccc3",
+  "confidence": "high",
+  "supersedes": "Decided to use Redis for caching (2026-08-03)"
+}

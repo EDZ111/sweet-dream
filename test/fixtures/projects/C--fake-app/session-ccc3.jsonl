@@ -1,0 +1,4 @@
+{"type":"user","message":{"role":"user","content":"Every time we deploy I keep forgetting to run the alembic migrations first. This happens again and again."},"timestamp":"2026-08-04T08:00:00Z"}
+{"type":"assistant","message":{"role":"assistant","content":"That's a recurring pattern - migrations before deploy. Worth automating."},"timestamp":"2026-08-04T08:00:30Z"}
+{"type":"user","message":{"role":"user","content":"Change of plan: switch to Memcached for caching, Redis was too expensive. We agreed on this in the team meeting."},"timestamp":"2026-08-04T08:15:00Z"}
+{"type":"assistant","message":{"role":"assistant","content":"Understood - Memcached replaces Redis for caching."},"timestamp":"2026-08-04T08:15:30Z"}

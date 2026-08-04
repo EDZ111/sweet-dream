@@ -1,0 +1,45 @@
+[
+  {
+    "fact": "The staging database runs PostgreSQL 16, not 15 - user corrected an earlier wrong belief",
+    "kind": "correction",
+    "source_date": "2026-08-02",
+    "source_session": "session-aaa1",
+    "confidence": "high",
+    "supersedes": "memory previously claimed staging runs PostgreSQL 15"
+  },
+  {
+    "fact": "Prefers pytest over unittest; all new tests must use pytest",
+    "kind": "preference",
+    "source_date": "2026-08-02",
+    "source_session": "session-aaa1",
+    "confidence": "high"
+  },
+  {
+    "fact": "Decided to use FastAPI for the notifications service",
+    "kind": "decision",
+    "source_date": "2026-08-03",
+    "source_session": "session-bbb2",
+    "confidence": "high"
+  },
+  {
+    "fact": "Decided to use Redis for caching",
+    "kind": "decision",
+    "source_date": "2026-08-03",
+    "source_session": "session-bbb2",
+    "confidence": "high"
+  },
+  {
+    "fact": "The staging database password was rotated on 2026-08-02; sessions opened before that date fail",
+    "kind": "project_fact",
+    "source_date": "2026-08-02",
+    "source_session": "session-bbb2",
+    "confidence": "medium"
+  },
+  {
+    "fact": "Recurring pattern: forgets to run alembic migrations before deploying, happens every deploy",
+    "kind": "pattern",
+    "source_date": "2026-08-04",
+    "source_session": "session-ccc3",
+    "confidence": "medium"
+  }
+]

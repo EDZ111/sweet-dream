@@ -1,0 +1,13 @@
+{
+  "name": "sweet-dream",
+  "owner": {
+    "name": "EDZ111"
+  },
+  "plugins": [
+    {
+      "name": "sweet-dream",
+      "source": "./",
+      "description": "Zep-backed memory consolidation: dream over session transcripts, store typed facts in a knowledge graph, keep MEMORY.md a lean index."
+    }
+  ]
+}

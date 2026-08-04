@@ -1,0 +1,7 @@
+{
+  "fact": "Edoardo prefers pytest over unittest; all new tests must use pytest",
+  "kind": "preference",
+  "source_date": "2026-08-02",
+  "source_session": "session-aaa1",
+  "confidence": "high"
+}

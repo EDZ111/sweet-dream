@@ -1,0 +1,4 @@
+{"type":"user","message":{"role":"user","content":"Actually, that's wrong - the staging database runs PostgreSQL 16, not 15. Please remember that."},"timestamp":"2026-08-02T10:00:00Z"}
+{"type":"assistant","message":{"role":"assistant","content":"Understood - staging is PostgreSQL 16. I'll keep that in mind."},"timestamp":"2026-08-02T10:00:30Z"}
+{"type":"user","message":{"role":"user","content":"I prefer pytest over unittest. Always use pytest for new tests from now on."},"timestamp":"2026-08-02T10:05:00Z"}
+{"type":"assistant","message":{"role":"assistant","content":"Got it, pytest for all new tests."},"timestamp":"2026-08-02T10:05:20Z"}

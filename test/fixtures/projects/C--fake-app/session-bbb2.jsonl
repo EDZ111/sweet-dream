@@ -1,0 +1,4 @@
+{"type":"user","message":{"role":"user","content":"Let's go with FastAPI for the notifications service. And I decided we're using Redis for caching."},"timestamp":"2026-08-03T09:00:00Z"}
+{"type":"assistant","message":{"role":"assistant","content":"FastAPI for notifications and Redis for caching - noted."},"timestamp":"2026-08-03T09:00:40Z"}
+{"type":"user","message":{"role":"user","content":"By the way, yesterday I rotated the staging database password, keep in mind sessions opened before that will fail."},"timestamp":"2026-08-03T09:10:00Z"}
+{"type":"assistant","message":{"role":"assistant","content":"Noted - the staging DB password was rotated, older sessions will need reconnecting."},"timestamp":"2026-08-03T09:10:30Z"}
