@@ -1,0 +1,21 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests (miner)
+        run: python -m unittest test.test_mine_transcript
+      - name: Python syntax
+        run: python -m py_compile scripts/zep_dream.py scripts/mine_transcript.py scripts/zep_graph_setup.py
+      - name: Bash syntax
+        run: bash -n install.sh scripts/should-dream.sh scripts/sweet-dream-hook.sh
