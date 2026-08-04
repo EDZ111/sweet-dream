@@ -45,6 +45,36 @@ Facts are classified against a custom graph ontology:
 - Python 3.10+ with `pip install zep-cloud`.
 - Git Bash on Windows (hook scripts are bash).
 
+## Getting a free Zep API key
+
+1. Go to [app.getzep.com](https://app.getzep.com) and sign up — Zep offers a
+   free tier that's enough to run sweet-dream.
+2. Once you're in the dashboard, create a project (or use the default one).
+3. Open the project's **API Keys** settings and generate a new key.
+4. Set it as a **user-scope environment variable** named `ZEP_API_KEY` —
+   never put it in a `.env` file that could get committed, and never paste it
+   into a chat, commit message, or issue.
+
+   ```bash
+   # macOS / Linux — add to ~/.zshrc or ~/.bashrc, then restart your shell
+   export ZEP_API_KEY="your-key-here"
+   ```
+
+   ```powershell
+   # Windows — sets it at user scope; restart your terminal/Claude Code session after
+   setx ZEP_API_KEY "your-key-here"
+   ```
+
+   On Windows, a Claude Code session started before the variable was set won't
+   see it — start a fresh session (or a fresh shell) after running `setx`.
+
+5. Verify it's picked up: `python scripts/zep_dream.py status` should print
+   graph info instead of an API-key error.
+
+If a key ever leaks, rotate it immediately from the same **API Keys** page at
+[app.getzep.com](https://app.getzep.com). See [SECURITY.md](SECURITY.md) for
+the full secrets policy.
+
 ## Install (plugin — recommended)
 
 ```
