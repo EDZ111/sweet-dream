@@ -148,6 +148,15 @@ session file it came from, the absolute calendar date (derive it from the
 file's mtime — a word like "yesterday" must be resolved before it is stored),
 and confidence (`high` when the user said it outright, `medium` when inferred).
 
+**Dedupe in the tool, not in the prompt.** Never hand-summarize existing
+memory into a mining subagent's prompt — it does not scale, and a dropped or
+mis-summarized fact means a duplicate episode. Each mining subagent runs
+`ZDREAM check --text "<candidate fact>"` itself for every candidate and
+reports back only `NO_MATCH` results and contradictions; candidates that
+merely repeat a known fact are dropped by the subagent and never reach the
+orchestrator. Phase 3's `check` still runs before every `add-finding` as the
+final authority.
+
 **Privacy rule: never extract secrets.** If a matching line contains an API
 key, token, or password, record the event ("user rotated the Zep key on
 YYYY-MM-DD") — never the value.
