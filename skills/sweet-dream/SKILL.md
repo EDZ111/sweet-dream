@@ -98,8 +98,18 @@ claims. Nothing is written in this phase.
 ### Phase 2 — GATHER SIGNAL
 
 Mine recent transcripts for durable signal. Transcripts are cheap to search
-and expensive to read: grep for signal markers first, then read only the hit
-lines and the turn that answers them — a whole-file read is a phase failure.
+and expensive to read — a whole-file read is a phase failure. Use the shipped
+miner (next to `zep_dream.py`) instead of writing ad hoc parsing scripts:
+
+```bash
+python <scripts>/mine_transcript.py <file.jsonl ...>          # hits as JSON lines
+python <scripts>/mine_transcript.py --count <file.jsonl ...>  # hit count per file
+```
+
+It filters to **user** turns, emits each marker hit plus the assistant turn
+that answers it as one JSON object per line, and ships with the marker
+vocabulary below built in (`--markers-file` overrides it, e.g. for a focus —
+the vocabulary here stays the source of truth).
 
 Transcripts live at `~/.claude/projects/<project>/*.jsonl` (one file per
 session, one JSON object per line). Find recent ones:

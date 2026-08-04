@@ -69,6 +69,7 @@ case "${1:-}" in
     cp "$SRC_DIR/skills/sweet-dream/SKILL.md" "$SKILL_DIR/"
     cp "$SRC_DIR/scripts/zep_dream.py" \
        "$SRC_DIR/scripts/zep_graph_setup.py" \
+       "$SRC_DIR/scripts/mine_transcript.py" \
        "$SRC_DIR/scripts/should-dream.sh" \
        "$SRC_DIR/scripts/sweet-dream-hook.sh" \
        "$SKILL_DIR/"
