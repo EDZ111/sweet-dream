@@ -101,3 +101,7 @@ existing graph alone. `--reset` honors the same guard.
 `test/` contains fixture transcripts with planted signals and the 15-item
 rubric the workflow was validated against (14/15). After any test run, clean
 the graph: `python scripts/zep_dream.py wipe --yes`.
+
+## License
+
+[MIT](LICENSE). Security policy in [SECURITY.md](SECURITY.md).

@@ -1,7 +1,7 @@
 {
   "name": "sweet-dream",
   "description": "Memory consolidation for Claude Code with a Zep knowledge-graph backend. Dreams over recent session transcripts, stores typed facts in the sweet_dreams graph, and rebuilds the local memory index. Auto-triggers every 24h via a Stop hook.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "EDZ111"
   }
