@@ -67,10 +67,15 @@ def cmd_status(args: argparse.Namespace) -> int:
     print("edge types:", ", ".join(t.name for t in (types.edge_types or [])))
 
     try:
-        episodes = client.graph.episode.get_by_graph_id(GRAPH_ID, lastn=args.lastn)
-        eps = episodes.episodes or []
-        print(f"recent episodes: {len(eps)} (lastn={args.lastn})")
-        for ep in eps:
+        # No total-count API exists; count a large fetch and stay honest
+        # when the request bound itself is hit ("N+").
+        bound = 1000
+        episodes = client.graph.episode.get_by_graph_id(GRAPH_ID, lastn=bound)
+        eps = sorted(episodes.episodes or [], key=lambda e: e.created_at or "")
+        total = f"{len(eps)}+" if len(eps) >= bound else str(len(eps))
+        shown = eps[-args.lastn:]
+        print(f"total episodes: {total} (showing last {len(shown)})")
+        for ep in shown:
             desc = (ep.source_description or "")[:60]
             print(f"  - {ep.created_at}  {desc}")
     except Exception as e:  # episode listing is orientation, not critical
@@ -126,6 +131,7 @@ def cmd_add_finding(args: argparse.Namespace) -> int:
             source_description=f"sweet-dream consolidation from session {payload['source_session']} on {payload['source_date']}",
         )
         print(f"added episode {episode.uuid_} ({payload['kind']}): {payload['fact'][:80]}")
+    print(f"queued {len(findings)} finding(s) for ingestion")
     return 0
 
 

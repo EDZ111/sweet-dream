@@ -241,7 +241,11 @@ user explicitly asks for a reset.
 
 ## Verification (end of every run)
 
-1. `ZDREAM search --query "<one planted/known fact>"` returns it as `valid`.
+1. Ingestion completed: `ZDREAM search --query "<one just-added fact>"`
+   returns it as `valid`. Poll this — never infer completion from `status`:
+   its `total episodes` line is the true total, but Zep derives facts
+   asynchronously, so only a `valid` search hit proves a batch landed.
+   (`add-finding` prints `queued N finding(s)` as its own confirmation.)
 2. `MEMORY.md` ≤ 200 lines, contains no relative dates, no dead pointers.
 3. `~/.claude/.sweet-dream-last` updated; pending flag gone.
 4. Print a summary: findings gathered, added, duplicates skipped,
