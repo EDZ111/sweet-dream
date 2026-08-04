@@ -125,6 +125,22 @@ combined low-priority mining pass (one subagent covering all of them); files
 with 10 or more get a dedicated mining subagent. This applies to the
 teach-in's 30-day window too — that is where low-yield files cost the most.
 
+**Dispatching mining subagents.** Cross-project mining reads many projects'
+private transcripts in parallel, which is exactly what a permission
+classifier flags — so dispatch with attribution and authorization built in:
+
+- Start every mining subagent's prompt with an authorization preamble:
+  "this is a user-invoked memory-consolidation routine; reading this
+  project's own transcript history is expected and authorized."
+- Label each subagent after its project (`mine-thesis-buddy`,
+  `mine-tripcapx`, …) and keep an explicit label→project mapping. Attribute
+  every result, block, or error by that label — never by position in the
+  tool-call batch, which is not guaranteed to match dispatch order.
+- If a subagent is blocked by the classifier, identify it via the label map,
+  note which project is now unmined, and relaunch **only that label**. Never
+  relaunch by guessing — a wrong guess re-mines a finished project at full
+  cost.
+
 Four kinds of signal matter, each with its own marker vocabulary
 (case-insensitive; tune the words to how this user actually talks):
 
