@@ -63,7 +63,8 @@ alone:
 **Teach-in (automatic when the graph is empty):** when `ZDREAM status` shows
 0 episodes, this run is the first dream. Two extra behaviours apply:
 - **Absorb existing memory.** Before scanning transcripts, read the local
-  memory files (`MEMORY.md` + topic files) and convert every still-true entry
+  memory files (each project's `MEMORY.md` + topic files, plus the global
+  `~/.claude/memory/MEMORY.md`) and convert every still-true entry
   into a finding (`kind` per its nature, source_date from the entry or the
   file mtime, `source_session: "memory-backfill"`). The graph starts knowing
   what the markdown already knew.
@@ -89,8 +90,9 @@ Understand current memory state before changing anything.
 
 1. `ZDREAM status` — graph health, entity types, recent episodes, sample facts.
 2. List local memory: `ls ~/.claude/projects/*/memory/` — read each `MEMORY.md`
-   index you find. Note stale entries (relative dates, pointers to files that
-   no longer exist) and the line count.
+   index you find, plus the global `~/.claude/memory/MEMORY.md` where
+   machine-wide facts live. Note stale entries (relative dates, pointers to
+   files that no longer exist) and the line count.
 
 Output: a mental map of what the graph already knows and what local memory
 claims. Nothing is written in this phase.
@@ -237,6 +239,13 @@ Rebuild the local index from the graph, then close out the run.
    `## Quick Reference (from sweet_dreams)` section holding the quickref
    output. Hard cap: **200 lines**. Anything longer than a line belongs in a
    topic file; a pointer whose target no longer exists gets removed.
+   Findings that aren't tied to a project — `tool_config` facts about the OS,
+   shell, or global CLI setup are the common case — are indexed into the
+   global `~/.claude/memory/MEMORY.md` (same index rules, same cap), not into
+   whichever project happened to host the dream. Known limitation: the
+   per-project auto-memory loading convention lives outside this skill, so
+   other sessions pick up the global file only through this skill's own
+   instructions.
 3. Timestamps and flags:
 
 ```bash
