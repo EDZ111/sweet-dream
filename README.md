@@ -25,10 +25,10 @@ Session ends
        └─yes─> touch ~/.claude/.sweet-dream-pending
 Next session
   └─ skill sees the flag ─> 4-phase dream
-       ORIENT       graph + local memory state
-       GATHER       targeted grep over recent *.jsonl transcripts
-       CONSOLIDATE  dedupe → supersede contradictions → graph.add episodes
-       PRUNE&INDEX  MEMORY.md ≤200 lines, Quick Reference from graph.search
+       ORIENT       graph + local memory state (per-project + global)
+       GATHER       mine_transcript.py over recent *.jsonl, hit-count pre-filter
+       CONSOLIDATE  dedupe in the tool → supersede contradictions → graph.add
+       PRUNE&INDEX  MEMORY.md ≤200 lines, spot-checked Quick Reference
 ```
 
 Facts are classified against a custom graph ontology:
@@ -110,13 +110,23 @@ bash install.sh --auto
 `scripts/zep_dream.py` is the only thing that touches Zep:
 
 ```
-status                    graph health, ontology, recent episodes and facts
+status                    graph health, ontology, true episode total + facts
 check --text "..."        dedupe probe before adding
-add-finding [--file f]    add finding(s) as JSON episodes
+add-finding [--file f]    add finding(s); prints "queued N" when done
 search --query Q          search edges / nodes / episodes
 quickref                  top valid facts for the MEMORY.md Quick Reference
 wipe --yes                delete all episodes (test-data cleanup)
 ```
+
+`scripts/mine_transcript.py [--count] [--markers-file F] <file.jsonl ...>`
+does the transcript reading for Phase 2: filters to user turns matching the
+signal-marker vocabulary (built in, overridable), emits each hit plus the
+assistant turn that answers it as structured JSON, and `--count` prints
+per-file hit counts for the pre-filter. Stdlib-only — no Zep needed.
+
+Local memory is per-project under `~/.claude/projects/<project>/memory/`,
+plus a global `~/.claude/memory/MEMORY.md` for machine-wide facts (OS, shell,
+global CLI setup) that belong to no single project.
 
 `scripts/zep_graph_setup.py [--graph-id ID] [--adopt] [--reset]` creates the
 graph, user, and ontology. Idempotent, and **ownership-aware**: if a graph
@@ -128,9 +138,16 @@ existing graph alone. `--reset` honors the same guard.
 
 ## Test
 
-`test/` contains fixture transcripts with planted signals and the 15-item
-rubric the workflow was validated against (14/15). After any test run, clean
-the graph: `python scripts/zep_dream.py wipe --yes`.
+`test/` contains fixture transcripts with planted signals, the 15-item rubric
+the workflow was validated against (14/15), and a stdlib unittest suite for
+the miner:
+
+```bash
+python -m unittest test.test_mine_transcript
+```
+
+After any test run against the real graph, clean it:
+`python scripts/zep_dream.py wipe --yes`.
 
 ## License
 
