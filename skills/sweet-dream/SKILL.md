@@ -49,6 +49,17 @@ retry:
    (Preference, Decision, Correction, WorkPattern, ProjectFact, ToolConfig;
    PREFERS, DECIDED, CORRECTED, RECURS).
 
+**If setup exits with code 2** ("refusing to touch graph"), a graph with that
+id already exists and was not created by sweet-dream — it may belong to
+another workload. **Stop and ask the user** which they want; never decide
+alone:
+- **Adopt it** — rerun setup with `--adopt`. Its ontology is replaced (episodes
+  are kept); only right when the user confirms the graph is theirs to repurpose.
+- **Rename ours** — rerun with `--graph-id <new_id>` and have the user set
+  `SWEET_DREAM_GRAPH_ID=<new_id>` as a user environment variable so
+  `zep_dream.py` targets the same graph in every later run. The existing
+  graph is left untouched.
+
 **Teach-in (automatic when the graph is empty):** when `ZDREAM status` shows
 0 episodes, this run is the first dream. Two extra behaviours apply:
 - **Absorb existing memory.** Before scanning transcripts, read the local

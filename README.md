@@ -88,8 +88,13 @@ quickref                  top valid facts for the MEMORY.md Quick Reference
 wipe --yes                delete all episodes (test-data cleanup)
 ```
 
-`scripts/zep_graph_setup.py [--reset]` creates (or drops and recreates) the
-graph, user, and ontology. Idempotent.
+`scripts/zep_graph_setup.py [--graph-id ID] [--adopt] [--reset]` creates the
+graph, user, and ontology. Idempotent, and **ownership-aware**: if a graph
+with the target id already exists but wasn't created by sweet-dream, setup
+refuses (exit 2) instead of overwriting its ontology. You then choose:
+`--adopt` to claim it (episodes kept, ontology replaced), or `--graph-id`
+plus a `SWEET_DREAM_GRAPH_ID` env var to use a different name and leave the
+existing graph alone. `--reset` honors the same guard.
 
 ## Test
 

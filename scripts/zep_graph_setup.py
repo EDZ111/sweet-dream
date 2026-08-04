@@ -17,8 +17,13 @@ from zep_cloud.external_clients.ontology import (
 )
 from zep_cloud.types import EntityEdgeSourceTarget
 
-GRAPH_ID = "sweet_dreams"
-USER_ID = "edoardo"
+GRAPH_ID = os.environ.get("SWEET_DREAM_GRAPH_ID", "sweet_dreams")
+USER_ID = os.environ.get("SWEET_DREAM_USER_ID", "edoardo")
+
+# Stamp written into the graph description on create/adopt. Setup refuses to
+# touch an existing graph whose description lacks it — the id may be in use
+# for something else entirely, and overwriting its ontology would corrupt it.
+OWNERSHIP_MARK = "sweet-dream"
 
 
 # --- Entity types: nouns the dream consolidator files facts under ------------
@@ -137,7 +142,30 @@ class Recurs(EdgeModel):
     )
 
 
+DESCRIPTION = (
+    "Consolidated long-term memory written by sweet-dream runs: "
+    "preferences, decisions, corrections, recurring patterns, and "
+    "project facts distilled from Claude Code session transcripts."
+)
+
+
+def _is_ours(graph) -> bool:
+    return OWNERSHIP_MARK in (graph.description or "")
+
+
 def main() -> int:
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--graph-id", default=GRAPH_ID,
+                        help="graph id to set up (default: sweet_dreams, or $SWEET_DREAM_GRAPH_ID)")
+    parser.add_argument("--adopt", action="store_true",
+                        help="claim an existing graph that was not created by sweet-dream")
+    parser.add_argument("--reset", action="store_true",
+                        help="drop and recreate the graph (only if it is sweet-dream's)")
+    args = parser.parse_args()
+    graph_id = args.graph_id
+
     api_key = os.environ.get("ZEP_API_KEY")
     if not api_key:
         print("ZEP_API_KEY not set in environment", file=sys.stderr)
@@ -145,16 +173,42 @@ def main() -> int:
 
     client = Zep(api_key=api_key)
 
-    if "--reset" in sys.argv:
-        try:
-            client.graph.delete(GRAPH_ID)
-            print(f"graph deleted: {GRAPH_ID}")
-        except Exception as e:
-            print(f"graph delete skipped ({e})")
+    # Ownership check before anything touches the graph. A graph with this id
+    # may predate sweet-dream and belong to another workload.
+    existing = None
+    try:
+        existing = client.graph.get(graph_id)
+    except Exception:
+        pass  # not found -> we will create it
+
+    if existing is not None and not _is_ours(existing) and not args.adopt:
+        print(
+            f"refusing to touch graph '{graph_id}': it already exists and does "
+            f"not look like a sweet-dream graph (description: "
+            f"{(existing.description or '(empty)')[:120]!r}).\n"
+            "Options:\n"
+            f"  - adopt it for sweet-dream:      rerun with --adopt "
+            "(its ontology WILL be replaced; episodes are kept)\n"
+            "  - keep it and use another name:  rerun with --graph-id <other> "
+            "and set SWEET_DREAM_GRAPH_ID=<other> so zep_dream.py targets it",
+            file=sys.stderr,
+        )
+        return 2
+
+    if args.reset:
+        if existing is None:
+            print("reset: graph does not exist, nothing to delete")
+        elif not _is_ours(existing) and not args.adopt:
+            print("reset refused: graph is not sweet-dream's (see above)", file=sys.stderr)
+            return 2
+        else:
+            client.graph.delete(graph_id)
+            existing = None
+            print(f"graph deleted: {graph_id}")
 
     # User (idempotent)
     try:
-        client.user.add(user_id=USER_ID, first_name="Edoardo")
+        client.user.add(user_id=USER_ID, first_name=USER_ID.capitalize())
         print(f"user created: {USER_ID}")
     except Exception as e:
         if "already exists" in str(e).lower() or "409" in str(e) or "bad request" in str(e).lower():
@@ -162,23 +216,14 @@ def main() -> int:
         else:
             raise
 
-    # Graph (idempotent)
-    try:
-        client.graph.create(
-            graph_id=GRAPH_ID,
-            name="Sweet Dreams",
-            description=(
-                "Consolidated long-term memory written by sweet-dream runs: "
-                "preferences, decisions, corrections, recurring patterns, and "
-                "project facts distilled from Claude Code session transcripts."
-            ),
-        )
-        print(f"graph created: {GRAPH_ID}")
-    except Exception as e:
-        if "already exists" in str(e).lower() or "409" in str(e) or "bad request" in str(e).lower():
-            print(f"graph exists: {GRAPH_ID}")
-        else:
-            raise
+    if existing is None:
+        client.graph.create(graph_id=graph_id, name="Sweet Dreams", description=DESCRIPTION)
+        print(f"graph created: {graph_id}")
+    elif not _is_ours(existing):  # implies --adopt
+        client.graph.update(graph_id, description=DESCRIPTION, name=existing.name or "Sweet Dreams")
+        print(f"graph adopted: {graph_id} (description stamped, episodes untouched)")
+    else:
+        print(f"graph exists: {graph_id}")
 
     # Ontology, scoped to this graph only (does not touch project-wide types)
     client.graph.set_ontology(
@@ -208,12 +253,12 @@ def main() -> int:
                 [EntityEdgeSourceTarget(source="WorkPattern")],
             ),
         },
-        graph_ids=[GRAPH_ID],
+        graph_ids=[graph_id],
     )
-    print("ontology set for", GRAPH_ID)
+    print("ontology set for", graph_id)
 
     # Verify
-    types = client.graph.list_entity_types(graph_id=GRAPH_ID)
+    types = client.graph.list_entity_types(graph_id=graph_id)
     entity_names = [t.name for t in (types.entity_types or [])]
     edge_names = [t.name for t in (types.edge_types or [])]
     print("entity types:", ", ".join(entity_names))
