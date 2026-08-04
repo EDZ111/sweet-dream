@@ -223,6 +223,15 @@ Consolidation invariants:
 Rebuild the local index from the graph, then close out the run.
 
 1. `ZDREAM quickref --limit 10` — the most important currently-valid facts.
+   These lines are Zep's *derived* summaries, not raw episode text, and a
+   derived edge can invert a relationship — so **spot-check before
+   publishing**: flag any quickref line with directional or relational
+   phrasing (`alias for`, `supersedes`, `replaces`, `requires`, `instead of`,
+   `rather than`, `not`, `only`), then verify each flagged line against the
+   source episodes with `ZDREAM search --query "<the line>" --scope episodes`.
+   On conflict, write the episode's own phrasing into the index, never the
+   graph's derived summary. This is a heuristic over flagged lines, not a
+   re-check of every line.
 2. Rewrite each project's `MEMORY.md` as a table of contents, not a document:
    one pointer line per topic file with a short hook, plus a
    `## Quick Reference (from sweet_dreams)` section holding the quickref
