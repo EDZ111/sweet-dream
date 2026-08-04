@@ -118,6 +118,13 @@ session, one JSON object per line). Find recent ones:
 find ~/.claude/projects -maxdepth 2 -name "*.jsonl" -mtime -7 | sort
 ```
 
+**Pre-filter by hit count before spending subagents.** Run
+`mine_transcript.py --count` over the candidate files and size the effort to
+the signal: files with **fewer than 10** marker hits get folded into a single
+combined low-priority mining pass (one subagent covering all of them); files
+with 10 or more get a dedicated mining subagent. This applies to the
+teach-in's 30-day window too — that is where low-yield files cost the most.
+
 Four kinds of signal matter, each with its own marker vocabulary
 (case-insensitive; tune the words to how this user actually talks):
 
