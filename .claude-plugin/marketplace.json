@@ -1,5 +1,6 @@
 {
   "name": "sweet-dream",
+  "description": "Memory consolidation for Claude Code with a Zep knowledge-graph backend — dreams over session transcripts and keeps a lean local MEMORY.md index.",
   "owner": {
     "name": "EDZ111"
   },

@@ -5,6 +5,7 @@ Idempotent: safe to re-run. Reads ZEP_API_KEY from the environment only.
 
 from __future__ import annotations
 
+import getpass
 import os
 import sys
 
@@ -18,7 +19,26 @@ from zep_cloud.external_clients.ontology import (
 from zep_cloud.types import EntityEdgeSourceTarget
 
 GRAPH_ID = os.environ.get("SWEET_DREAM_GRAPH_ID", "sweet_dreams")
-USER_ID = os.environ.get("SWEET_DREAM_USER_ID", "edoardo")
+
+
+def _resolve_user_id(cli_value: str | None) -> str:
+    """Priority: --user-id (the agent asked the user) > $SWEET_DREAM_USER_ID
+    (a previously-saved answer) > OS username > the literal "default_user".
+    Never hardcode a real person's name here — this runs on every installer's
+    machine, not just the original author's."""
+    if cli_value:
+        return cli_value
+    env_value = os.environ.get("SWEET_DREAM_USER_ID")
+    if env_value:
+        return env_value
+    for var in ("USER", "USERNAME", "LOGNAME"):
+        os_user = os.environ.get(var)
+        if os_user:
+            return os_user
+    try:
+        return getpass.getuser()
+    except Exception:
+        return "default_user"
 
 # Stamp written into the graph description on create/adopt. Setup refuses to
 # touch an existing graph whose description lacks it — the id may be in use
@@ -163,8 +183,12 @@ def main() -> int:
                         help="claim an existing graph that was not created by sweet-dream")
     parser.add_argument("--reset", action="store_true",
                         help="drop and recreate the graph (only if it is sweet-dream's)")
+    parser.add_argument("--user-id", default=None,
+                        help="Zep user id to own the graph (default: $SWEET_DREAM_USER_ID, "
+                             "then the OS username, then 'default_user')")
     args = parser.parse_args()
     graph_id = args.graph_id
+    user_id = _resolve_user_id(args.user_id)
 
     api_key = os.environ.get("ZEP_API_KEY")
     if not api_key:
@@ -208,11 +232,11 @@ def main() -> int:
 
     # User (idempotent)
     try:
-        client.user.add(user_id=USER_ID, first_name=USER_ID.capitalize())
-        print(f"user created: {USER_ID}")
+        client.user.add(user_id=user_id, first_name=user_id.capitalize())
+        print(f"user created: {user_id}")
     except Exception as e:
         if "already exists" in str(e).lower() or "409" in str(e) or "bad request" in str(e).lower():
-            print(f"user exists: {USER_ID}")
+            print(f"user exists: {user_id}")
         else:
             raise
 

@@ -111,10 +111,14 @@ graph setup:
 
 ```bash
 pip install zep-cloud
-python <plugin-cache>/sweet-dream/scripts/zep_graph_setup.py
+python <plugin-cache>/sweet-dream/scripts/zep_graph_setup.py --user-id you
 ```
 
-(or just ask Claude to run the sweet-dream onboarding — the skill knows how).
+`--user-id` is optional — omit it and the script falls back to
+`$SWEET_DREAM_USER_ID`, then your OS username, then `default_user`.
+
+(or just ask Claude to run the sweet-dream onboarding — the skill knows how,
+including asking you what user id to use).
 
 ## Install (flat fallback)
 
@@ -152,8 +156,8 @@ Local memory is per-project under `~/.claude/projects/<project>/memory/`,
 plus a global `~/.claude/memory/MEMORY.md` for machine-wide facts (OS, shell,
 global CLI setup) that belong to no single project.
 
-`scripts/zep_graph_setup.py [--graph-id ID] [--adopt] [--reset]` creates the
-graph, user, and ontology. Idempotent, and **ownership-aware**: if a graph
+`scripts/zep_graph_setup.py [--graph-id ID] [--user-id ID] [--adopt] [--reset]`
+creates the graph, user, and ontology. Idempotent, and **ownership-aware**: if a graph
 with the target id already exists but wasn't created by sweet-dream, setup
 refuses (exit 2) instead of overwriting its ontology. You then choose:
 `--adopt` to claim it (episodes kept, ontology replaced), or `--graph-id`

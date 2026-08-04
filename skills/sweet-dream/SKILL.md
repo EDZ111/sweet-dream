@@ -44,10 +44,16 @@ retry:
 2. `ZEP_API_KEY` must exist as a user environment variable — if absent, ask
    the user to set it in their own terminal or the OS env editor; never accept
    the key in chat.
-3. Run `zep_graph_setup.py` (same directory as `zep_dream.py`). Idempotent:
-   creates the `sweet_dreams` graph, its owner user, and the custom ontology
-   (Preference, Decision, Correction, WorkPattern, ProjectFact, ToolConfig;
-   PREFERS, DECIDED, CORRECTED, RECURS).
+3. **Pick a Zep user id.** Ask the user what identifier they'd like their
+   facts stored under (a first name or short handle is fine). If they have no
+   preference, don't block on it — just omit `--user-id` and let the script
+   fall back on its own (`$SWEET_DREAM_USER_ID`, then the OS username, then
+   `default_user`). Never hardcode a specific person's name here; this runs
+   on whoever installed the plugin, not the original author.
+4. Run `zep_graph_setup.py [--user-id <id>]` (same directory as
+   `zep_dream.py`). Idempotent: creates the `sweet_dreams` graph, its owner
+   user, and the custom ontology (Preference, Decision, Correction,
+   WorkPattern, ProjectFact, ToolConfig; PREFERS, DECIDED, CORRECTED, RECURS).
 
 **If setup exits with code 2** ("refusing to touch graph"), a graph with that
 id already exists and was not created by sweet-dream — it may belong to
