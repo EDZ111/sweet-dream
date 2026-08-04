@@ -7,7 +7,7 @@ preferences, decisions, a relative date, a contradiction (Redis → Memcached),
 and a recurring pattern, plus a stale `MEMORY.md` (wrong fact, dead pointer,
 relative date).
 
-## Rubric result: 14/15
+## Rubric result: 15/15
 
 | # | Behaviour (from the source material) | Result |
 |---|---|---|
@@ -25,7 +25,7 @@ relative date).
 | 12 | 24h/session-count condition checker | pass (3/3 unit cases) |
 | 13 | Consolidated facts retrievable via graph search | pass |
 | 14 | Facts classified per custom ontology | pass (PREFERS, CORRECTED, RECURS edges; ProjectFact nodes; some nodes fall back to default labels) |
-| 15 | Steerable by a focus instruction | partial (selection rule specified and traced, not exercised as a separate storage run) |
+| 15 | Steerable by a focus instruction | pass (exercised 2026-08-04 against a throwaway `sweet_dreams_test` graph: `focus: coding-style preferences` stored the pytest preference and the PostgreSQL correction, skipped the FastAPI/Redis/Memcached decisions, the migration pattern, and the password-rotation fact; full edge inventory confirmed only the two intended facts landed; test graph deleted afterwards) |
 
 ## Fixes applied during the run (one iteration each)
 

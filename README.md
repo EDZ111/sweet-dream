@@ -16,6 +16,30 @@ re-expressed and re-backed onto Zep. The dream concept mirrors Anthropic's
 [managed-agents Dreams](https://platform.claude.com/docs/en/managed-agents/dreams)
 and [memory stores](https://platform.claude.com/docs/en/managed-agents/memory).
 
+## Privacy & data processing
+
+**sweet-dream sends your data to a third party.** Everything a dream run
+extracts — facts mined from your session transcripts (corrections,
+preferences, decisions, project details, workflow patterns) — is stored in
+**Zep Cloud**, a hosted service operated by Zep Software, Inc. That means
+excerpts of how you work, and the substance of what you tell your agent,
+leave your machine and are processed under Zep's terms, not yours.
+
+Before using sweet-dream, read
+[Zep's Terms of Service](https://www.getzep.com/legal/terms/) and
+[Zep's Privacy Policy](https://www.getzep.com/legal/privacy/) **carefully**
+and decide whether you are comfortable with that processing — including
+retention, subprocessors, and any use of data for service improvement.
+Do not run sweet-dream on transcripts containing employer-confidential,
+client-confidential, or otherwise restricted material unless you have
+verified Zep's terms permit it.
+
+sweet-dream never extracts secrets by design (see
+[SECURITY.md](SECURITY.md)), but "no secrets" is not "no personal data" —
+the facts it stores are still about you. If you want memory consolidation
+without third-party processing, follow the planned work on local GraphRAG
+backends in the issue tracker.
+
 ## How it works
 
 ```
